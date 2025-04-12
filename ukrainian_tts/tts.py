@@ -42,13 +42,15 @@ class TTS:
         self.device = device
         self.__setup_cache(cache_folder)
 
-    def tts(self, text: str, voice: str, stress: str, output_fp=BytesIO()):
+    def tts(self, text: str, voice: str, stress: str, output_fp=BytesIO(), format='WAV', subtype='PCM_16'):
         """
         Run a Text-to-Speech engine and output to `output_fp` BytesIO-like object.
         - `text` - your model input text.
         - `voice` - one of predefined voices from `Voices` enum.
         - `stress` - stress method options, predefined in `Stress` enum.
         - `output_fp` - file-like object output. Stores in RAM by default.
+        - `format` - see soundfile.available_formats(). (default is 'WAV')
+        - `subtype` - see soundfile.available_subtypes(). (default is 'PCM_16')
         """
 
         if stress not in [option.value for option in Stress]:
@@ -72,7 +74,8 @@ class TTS:
         # synthesis
         with no_grad():
             start = time.time()
-            wav = self.synthesizer(text, spembs=self.xvectors[voice][0])["wav"]
+            synt = self.synthesizer(text, spembs=self.xvectors[voice][0])
+            wav = synt["wav"]
 
         rtf = (time.time() - start) / (len(wav) / self.synthesizer.fs)
         print(f"RTF = {rtf:5f}")
@@ -81,8 +84,8 @@ class TTS:
             output_fp,
             wav.view(-1).cpu().numpy(),
             self.synthesizer.fs,
-            "PCM_16",
-            format="wav",
+            subtype,
+            format=format,
         )
 
         output_fp.seek(0)
