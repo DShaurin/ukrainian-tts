@@ -1,5 +1,6 @@
 from io import BytesIO
 import requests
+from os import getcwd
 from os.path import exists, join, dirname
 from espnet2.bin.tts_inference import Text2Speech
 from enum import Enum
@@ -109,7 +110,7 @@ class TTS:
         model_path = join(cache_folder, "model.pth")
         config_path = join(cache_folder, "config.yaml")
         speakers_path = join(cache_folder, "spk_xvector.ark")
-        feat_stats_path = join(cache_folder, "feats_stats.npz")
+        feat_stats_path = join(getcwd(), "feats_stats.npz")
 
         self.__download(model_link, model_path)
         self.__download(config_link, config_path)
