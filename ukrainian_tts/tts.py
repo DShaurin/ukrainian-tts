@@ -109,7 +109,7 @@ class TTS:
         model_path = join(cache_folder, "model.pth")
         config_path = join(cache_folder, "config.yaml")
         speakers_path = join(cache_folder, "spk_xvector.ark")
-        feat_stats_path = join(cache_folder, "feats_stats.npz")
+        feat_stats_path = "feats_stats.npz" # join(cache_folder, "feats_stats.npz")
 
         self.__download(model_link, model_path)
         self.__download(config_link, config_path)
